@@ -85,6 +85,18 @@ class Graph:
 
         This should be done using recursion.
         """
+        """
+        Class Notes:
+        visited = set()
+        self.def_recursive_helper(starting_vertex, visited)
+    def dft_recursive_helper(self, curr_vertex, visited):
+        visted.add(curr_vertex)
+        print(curr_vertex)
+        for neightbor in self.vertices[curr_vertex]:
+            if neighbor not in visited:
+                self.dft_recursive_helper(neighbor, visited)
+        """
+
         # IF the vertex has not been visited, add it to visited
         if starting_vertex not in visited:
             visited.add(starting_vertex)
