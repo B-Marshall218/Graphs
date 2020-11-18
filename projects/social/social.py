@@ -1,6 +1,13 @@
+import random
+import math
+
+from collections import deque
+
+
 class User:
     def __init__(self, name):
         self.name = name
+
 
 class SocialGraph:
     def __init__(self):
@@ -10,6 +17,8 @@ class SocialGraph:
 
     def add_friendship(self, user_id, friend_id):
         """
+        if user_id is not in self.users or friend_id is not in self.friendships:
+            self.users[user_id].add(friend_id) or self.friendships[friend_id].add(user_id) 
         Creates a bi-directional friendship
         """
         if user_id == friend_id:
@@ -45,8 +54,21 @@ class SocialGraph:
         # !!!! IMPLEMENT ME
 
         # Add users
-
+        for i in range(num_users):
+            self.add_user(f"User{i}")
         # Create friendships
+        # Generate all the possible friendships and put them in a list
+        possible_friendships = []
+        for user_id in self.users:
+            for friend_id in range(user_id + 1, self.last_id + 1):
+                possible_friendships.append((user_id, friend_id))
+        # Then shuffle the list
+        random.shuffle(possible_friendships)
+        # Create friendships using add_friendship from first N elements in that list
+        # divide by two bc add_friendships is adding a bi-directional edge/friendship
+        for i in range(math.floor(num_users * avg_friendships / 2)):
+            friendship = possible_friendships[i]
+            self.add_friendship(friendship[0], friendship[1])
 
     def get_all_social_paths(self, user_id):
         """
@@ -59,6 +81,29 @@ class SocialGraph:
         """
         visited = {}  # Note that this is a dictionary, not a set
         # !!!! IMPLEMENT ME
+        queue = deque()
+        # Pushes entire path of user_id onto the queue
+        queue.append([user_id])
+
+        # While there is something in the queue
+        while len(queue) > 0:
+            currPath = queue.popleft()
+            currUser = currPath[-1]
+            # this is how you get the shortest path
+
+            # If the curr user hasnt been visited yet
+            if currUser not in visited:
+                # add curr user to the dict as currPath value
+                visited[currUser] = currPath
+                # get the edges/paths for friendships
+                for friend in self.friendships[currUser]:
+                    # creates a copy of the current array to edit it
+                    newPath = list(currPath)
+                    # add edge friend to array
+                    newPath.append(friend)
+                    # add new friendship path in queue
+                    queue.append(newPath)
+
         return visited
 
 
